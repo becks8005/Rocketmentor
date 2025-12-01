@@ -118,7 +118,7 @@ class ApiClient {
       throw new Error('Not authenticated');
     }
 
-    const dbUpdates: Record<string, unknown> = {};
+    const dbUpdates: { first_name?: string; onboarding_completed?: boolean; getting_started_completed?: boolean } = {};
     if (updates.firstName !== undefined) dbUpdates.first_name = updates.firstName;
     if (updates.onboardingCompleted !== undefined) dbUpdates.onboarding_completed = updates.onboardingCompleted;
     if (updates.gettingStartedCompleted !== undefined) dbUpdates.getting_started_completed = updates.gettingStartedCompleted;
@@ -146,7 +146,7 @@ class ApiClient {
 
   // Listen to auth state changes
   onAuthStateChange(callback: (user: User | null) => void) {
-    return supabase.auth.onAuthStateChange(async (event, session) => {
+    return supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         try {
           const { data: userData } = await supabase
