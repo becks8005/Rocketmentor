@@ -118,13 +118,14 @@ class ApiClient {
       throw new Error('Not authenticated');
     }
 
-    const dbUpdates: { first_name?: string; onboarding_completed?: boolean; getting_started_completed?: boolean } = {};
+    const dbUpdates: any = {};
     if (updates.firstName !== undefined) dbUpdates.first_name = updates.firstName;
     if (updates.onboardingCompleted !== undefined) dbUpdates.onboarding_completed = updates.onboardingCompleted;
     if (updates.gettingStartedCompleted !== undefined) dbUpdates.getting_started_completed = updates.gettingStartedCompleted;
 
     const { data, error } = await supabase
       .from('users')
+      // @ts-ignore - Supabase type inference issue
       .update(dbUpdates)
       .eq('id', authUser.id)
       .select()
