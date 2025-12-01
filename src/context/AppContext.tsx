@@ -20,6 +20,7 @@ import {
   generateManagerCanvas,
   generatePromotionPath
 } from '../utils/helpers';
+import { apiClient } from '../utils/api';
 import { COMPETENCIES } from '../data/constants';
 
 // Initial State
@@ -231,7 +232,7 @@ interface AppContextType {
   // Helper functions
   login: (email: string, password: string) => Promise<boolean>;
   signup: (firstName: string, email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   getCurrentWeekPlan: () => WeekPlan | null;
   createWeekPlan: () => WeekPlan;
 }
@@ -242,28 +243,52 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Load state from localStorage on mount
+  // Load state and listen to Supabase auth changes
   useEffect(() => {
-    const savedUser = loadFromStorage<User>('user');
-    const savedOnboarding = loadFromStorage<OnboardingData>('onboarding');
-    const savedManagerCanvas = loadFromStorage<ManagerCanvas>('managerCanvas');
-    const savedPromotionPath = loadFromStorage<PromotionPath>('promotionPath');
-    const savedWeekPlans = loadFromStorage<WeekPlan[]>('weekPlans');
-    const savedWins = loadFromStorage<Win[]>('wins');
-    const savedChatHistory = loadFromStorage<ChatMessage[]>('chatHistory');
-
-    dispatch({
-      type: 'LOAD_STATE',
-      payload: {
-        user: savedUser || null,
-        onboarding: savedOnboarding || initialOnboarding,
-        managerCanvas: savedManagerCanvas || null,
-        promotionPath: savedPromotionPath || null,
-        weekPlans: savedWeekPlans || [],
-        wins: savedWins || [],
-        chatHistory: savedChatHistory || [],
+    const loadInitialState = async () => {
+      // Try to get current user from Supabase
+      let user: User | null = null;
+      
+      try {
+        const response = await apiClient.getCurrentUser();
+        user = response.user;
+      } catch (error) {
+        // User not authenticated, that's okay
+        console.log('No authenticated user');
       }
+
+      // Load local data (will be synced with Supabase later)
+      const savedOnboarding = loadFromStorage<OnboardingData>('onboarding');
+      const savedManagerCanvas = loadFromStorage<ManagerCanvas>('managerCanvas');
+      const savedPromotionPath = loadFromStorage<PromotionPath>('promotionPath');
+      const savedWeekPlans = loadFromStorage<WeekPlan[]>('weekPlans');
+      const savedWins = loadFromStorage<Win[]>('wins');
+      const savedChatHistory = loadFromStorage<ChatMessage[]>('chatHistory');
+
+      dispatch({
+        type: 'LOAD_STATE',
+        payload: {
+          user,
+          onboarding: savedOnboarding || initialOnboarding,
+          managerCanvas: savedManagerCanvas || null,
+          promotionPath: savedPromotionPath || null,
+          weekPlans: savedWeekPlans || [],
+          wins: savedWins || [],
+          chatHistory: savedChatHistory || [],
+        }
+      });
+    };
+
+    loadInitialState();
+
+    // Listen to auth state changes
+    const { data: { subscription } } = apiClient.onAuthStateChange((user) => {
+      dispatch({ type: 'SET_USER', payload: user });
     });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Save state to localStorage on changes
@@ -277,31 +302,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     saveToStorage('chatHistory', state.chatHistory);
   }, [state]);
 
-  const login = async (email: string, _password: string): Promise<boolean> => {
-    // Mock login - in real app, this would call an API
-    const savedUser = loadFromStorage<User>('user');
-    if (savedUser && savedUser.email === email) {
-      dispatch({ type: 'SET_USER', payload: savedUser });
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const { user } = await apiClient.login(email, password);
+      dispatch({ type: 'SET_USER', payload: user });
       return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   };
 
-  const signup = async (firstName: string, email: string, _password: string): Promise<boolean> => {
-    // Mock signup - in real app, this would call an API
-    const newUser: User = {
-      id: generateId(),
-      firstName,
-      email,
-      createdAt: new Date().toISOString(),
-      onboardingCompleted: false,
-    };
-    dispatch({ type: 'SET_USER', payload: newUser });
-    saveToStorage('user', newUser);
-    return true;
+  const signup = async (firstName: string, email: string, password: string): Promise<boolean> => {
+    try {
+      const { user } = await apiClient.signup(firstName, email, password);
+      dispatch({ type: 'SET_USER', payload: user });
+      return true;
+    } catch (error) {
+      console.error('Signup error:', error);
+      return false;
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await apiClient.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     dispatch({ type: 'LOGOUT' });
     localStorage.removeItem('rocketmentor_user');
   };

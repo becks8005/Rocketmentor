@@ -1,4 +1,69 @@
-# React + TypeScript + Vite
+# Rocketmentor
+
+A career coaching application for consultants to track their progress and get AI-powered guidance.
+
+## Project Structure
+
+- `src/` - Frontend React application
+- `supabase/` - Database migrations and schema
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- A free [Supabase](https://supabase.com) account
+
+### Setup
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Set up Supabase:**
+   - Create a free account at [supabase.com](https://supabase.com)
+   - Create a new project
+   - Get your API keys from Settings → API
+   - See `SUPABASE_SETUP.md` for detailed instructions
+
+3. **Configure environment variables:**
+   Create `.env` in the root directory:
+   ```bash
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key-here
+   ```
+
+4. **Run database migrations:**
+   - Copy the SQL from `supabase/migrations/001_initial_schema.sql`
+   - Paste it into Supabase Dashboard → SQL Editor → Run
+
+5. **Start the app:**
+   ```bash
+   npm run dev
+   ```
+   The app will run on http://localhost:5173
+
+### Environment Variables
+
+Create `.env` file in the root directory:
+```
+VITE_SUPABASE_URL=your-supabase-project-url
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+See `SUPABASE_SETUP.md` for complete setup instructions.
+
+## Features
+
+- ✅ User authentication with Supabase Auth
+- ✅ PostgreSQL database with Row Level Security
+- ✅ Onboarding flow for new users
+- ✅ Weekly planning and task management
+- ✅ Career milestone tracking
+- 🔜 AI-powered coaching (OpenAI integration via Supabase Edge Functions)
+
+## Development
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
