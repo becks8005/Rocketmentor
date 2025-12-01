@@ -7,7 +7,6 @@ import type {
   PromotionMilestone,
   KanbanCard,
   CareerMove,
-  Win,
   DayOfWeek
 } from '../types';
 import { COMPETENCIES, DEFAULT_MILESTONES } from '../data/constants';
@@ -228,7 +227,7 @@ export const generateFocusAreas = (onboarding: OnboardingData): FocusArea[] => {
     focusAreas.push({
       id: generateId(),
       title: getFocusAreaTitle(competency.id, assessment.score),
-      description: getFocusAreaDescription(competency.id, assessment.score),
+      description: getFocusAreaDescription(competency.id),
       linkedCompetencies: [competency.id],
       examples: [],
     });
@@ -249,7 +248,7 @@ const getFocusAreaTitle = (competencyId: string, score: number): string => {
   return titles[competencyId]?.[score < 3 ? 0 : 1] || 'Develop this competency';
 };
 
-const getFocusAreaDescription = (competencyId: string, score: number): string => {
+const getFocusAreaDescription = (competencyId: string): string => {
   const descriptions: Record<string, string> = {
     problem_solving: 'Structure problems clearly before diving in. Use hypothesis trees and issue trees to break down complex challenges.',
     client_impact: 'Find ways to make your contributions visible to clients. Proactively share updates and build relationships.',
@@ -370,7 +369,7 @@ export const generateSubTasks = (card: KanbanCard): Partial<KanbanCard>[] => {
 
 export const generateCareerMoves = (
   cards: KanbanCard[], 
-  managerCanvas: ManagerCanvas | null,
+  _managerCanvas: ManagerCanvas | null,
   focusAreas: FocusArea[]
 ): CareerMove[] => {
   const moves: CareerMove[] = [];

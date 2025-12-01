@@ -4,7 +4,6 @@ import {
   Trophy, 
   Plus, 
   MagnifyingGlass, 
-  Funnel, 
   Copy, 
   PencilSimple, 
   Trash,

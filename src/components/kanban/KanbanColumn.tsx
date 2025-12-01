@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Calendar } from '@phosphor-icons/react';
+import { AnimatePresence } from 'framer-motion';
+import { Plus } from '@phosphor-icons/react';
 import type { KanbanCard as KanbanCardType, DayOfWeek } from '../../types';
 import { KanbanCard } from './KanbanCard';
 import { Button, Modal, Input, Textarea, Select } from '../ui';
@@ -28,7 +28,6 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
   onDeleteCard,
   onMarkWin,
   onDropCard,
-  isToday,
 }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);

@@ -8,15 +8,16 @@ interface CardProps {
   gradient?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 export const Card: React.FC<CardProps> = ({
   children,
   className = '',
   hover = false,
-  gradient = false,
   padding = 'md',
   onClick,
+  style,
 }) => {
   const paddingStyles = {
     none: '',
@@ -37,6 +38,7 @@ export const Card: React.FC<CardProps> = ({
     borderColor: 'var(--border-subtle)',
     borderWidth: '1px',
     borderRadius: '5px',
+    ...style,
   };
 
   if (onClick) {

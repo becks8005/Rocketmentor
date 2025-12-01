@@ -5,8 +5,7 @@ import {
   Users, 
   Lightning, 
   CheckCircle, 
-  ArrowClockwise,
-  CaretDown
+  ArrowClockwise
 } from '@phosphor-icons/react';
 import type { CareerMove } from '../../types';
 import { Badge, Button } from '../ui';

@@ -24,7 +24,7 @@ const NAV_ITEMS = [
   { path: '/app/coach', label: 'Coach', icon: Chat, description: 'AI mentor chat' },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, headerHeight = 65 }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, headerHeight = 65 }) => {
   const navigate = useNavigate();
   const { state, logout } = useApp();
 

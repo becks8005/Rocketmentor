@@ -2,12 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkle, 
-  Calendar, 
-  ClipboardText, 
   Rocket,
-  CaretRight,
   MagicWand,
-  Play,
   CheckCircle,
   WarningCircle
 } from '@phosphor-icons/react';
@@ -15,10 +11,9 @@ import { useApp } from '../context/AppContext';
 import { KanbanColumn } from '../components/kanban/KanbanColumn';
 import { CareerMoveCard } from '../components/kanban/CareerMoveCard';
 import { Button, Card, Modal, Textarea } from '../components/ui';
-import type { KanbanCard, DayOfWeek, WeekPlan, CareerMove } from '../types';
+import type { KanbanCard, DayOfWeek, WeekPlan } from '../types';
 import { 
   generateId, 
-  getCurrentWeekStart, 
   parseWeekDump, 
   generateCareerMoves,
   generateSubTasks
@@ -333,7 +328,7 @@ export const ThisWeekPage: React.FC = () => {
           </div>
           
           <div className="flex gap-6 overflow-x-auto pb-4">
-            {DAYS_OF_WEEK.map((dayLabel, index) => {
+            {DAYS_OF_WEEK.map((dayLabel) => {
               const day = dayLabel.toLowerCase() as DayOfWeek;
               return (
                 <KanbanColumn

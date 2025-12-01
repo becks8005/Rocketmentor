@@ -88,7 +88,7 @@ export const PathPage: React.FC = () => {
   };
 
   const getCompetencyIcon = (emojiIcon: string) => {
-    const iconMap: { [key: string]: JSX.Element } = {
+    const iconMap: { [key: string]: React.ReactElement } = {
       '🧩': <Brain className="w-5 h-5 text-accent-blue" />,
       '🎯': <Target className="w-5 h-5 text-accent-blue" />,
       '⚡': <Lightning className="w-5 h-5 text-accent-blue" />,
@@ -307,7 +307,7 @@ export const PathPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
-                  {promotionPath.competencies.map((comp, idx) => {
+                  {promotionPath.competencies.map((comp) => {
                     const competency = COMPETENCIES.find(c => c.id === comp.competencyId);
                     if (!competency) return null;
 

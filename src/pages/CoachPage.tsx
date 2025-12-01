@@ -8,15 +8,14 @@ import {
   FileText,
   Target,
   Clock,
-  Trash,
   Plus,
   ChatCircle,
   Info
 } from '@phosphor-icons/react';
 import { useApp } from '../context/AppContext';
-import { Card, Button, Badge } from '../components/ui';
+import { Card, Button } from '../components/ui';
 import type { ChatMessage } from '../types';
-import { generateId, generateCoachResponse, formatDate } from '../utils/helpers';
+import { generateId, generateCoachResponse } from '../utils/helpers';
 import ReactMarkdown from 'react-markdown';
 
 const SUGGESTED_QUESTIONS = [
@@ -105,12 +104,6 @@ export const CoachPage: React.FC = () => {
     inputRef.current?.focus();
   };
 
-  const handleClearChat = () => {
-    if (confirm('Clear all chat history?')) {
-      dispatch({ type: 'CLEAR_CHAT_HISTORY' });
-    }
-  };
-
   const handleNewChat = () => {
     if (chatHistory.length > 0) {
       if (confirm('Start a new conversation? Current chat will be cleared.')) {
@@ -143,9 +136,6 @@ export const CoachPage: React.FC = () => {
   const contextItems: string[] = [];
   if (managerCanvas) {
     contextItems.push(`Manager Style: ${managerCanvas.style}`);
-    if (managerCanvas.priorities?.length) {
-      contextItems.push(`Manager Priorities: ${managerCanvas.priorities.join(', ')}`);
-    }
   }
   if (promotionPath) {
     contextItems.push(`Target Role: ${promotionPath.targetLevel.replace('_', ' ')}`);
@@ -304,7 +294,7 @@ export const CoachPage: React.FC = () => {
             </div>
           ) : (
             <AnimatePresence>
-              {chatHistory.map((message, index) => (
+              {chatHistory.map((message) => (
                 <motion.div
                   key={message.id}
                   initial={{ opacity: 0, y: 10 }}

@@ -15,7 +15,6 @@ export const Progress: React.FC<ProgressProps> = ({
   max = 100,
   size = 'md',
   showLabel = false,
-  gradient = true,
   className = '',
 }) => {
   const percentage = Math.min(100, (value / max) * 100);
